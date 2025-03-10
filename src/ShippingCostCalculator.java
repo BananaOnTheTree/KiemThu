@@ -9,7 +9,7 @@ public class ShippingCostCalculator {
         this.urgent = urgent;
     }
 
-    public int calculateShippingCost() {
+    public int calculateShippingCost(int weight, int distance, boolean urgent) {
         int cost;
 
         if (weight >= 1 && weight <= 5) {
@@ -37,5 +37,9 @@ public class ShippingCostCalculator {
         }
 
         return cost;
+    }
+
+    public int calculateShippingCost() {
+        return calculateShippingCost(weight, distance, urgent);
     }
 }

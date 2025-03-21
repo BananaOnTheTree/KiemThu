@@ -112,3 +112,88 @@ public class ShippingCostCalculatorC2Test extends TestCase {
 
 ```
 Nhận thấy rằng, tất cả các test cho độ đo C2 đều Passed, tuy vậy bộ test không phát hiện được bug cài ở dòng 6. Cần sử dụng các phương pháp kiểm thử khác, ví dụ kết hợp giữa phân hoạch tương đương và kiểm thử biên để có thể phát hiện được lỗi này.
+
+## Kiểm thử dòng dữ liệu
+
+Ta xây dựng bảng với các ca kiểm thử tương ứng:
+
+| ID   | Input        | Actual Output | Expected Output  | Result |
+|------|--------------|---------------|------------------|--------|
+| TC6  | 2,75,false   | 37500         | 37500            | Passed |
+| TC7  | 25,150,false | 107500         | 107500            | Passed |
+| TC8  | 100,500,true | 420000         | 420000            | Passed |
+| TC9  | 0,20,false| Invalid weight | Invalid weight   | Passed |
+| TC10 | 2,0,true| Invalid distance | Invalid distance | Passed |
+| TC11 | 2,150,true| 81000 | 81000 | Passed |
+| TC12 | 2,500,false| 280000 | 280000 | Passed |
+| TC13 | 10,50,true| 90000 | 90000 | Passed |
+| TC14 | 10,200,false| 120000 | 120000 | Passed |
+| TC15 | 20,500,false| 320000 | 320000 | Passed |
+
+Chạy test cases:
+```java
+import junit.framework.TestCase;
+
+public class ShippingCostCalculatorC2Test extends TestCase {
+    
+    public void test6() {
+        ShippingCostCalculator calculator = new ShippingCostCalculator(2, 75, false);
+        assertEquals(30000 + 100 * 75, calculator.calculateShippingCost(2, 75, false));
+    }
+
+    public void test7() {
+        ShippingCostCalculator calculator = new ShippingCostCalculator(25, 150, false);
+        assertEquals(70000 + 250 * 150, calculator.calculateShippingCost());
+    }
+
+    public void test8() {
+        ShippingCostCalculator calculator = new ShippingCostCalculator(100, 500, true);
+        assertEquals((int) ((100000 + 500 * 500) * 1.2), calculator.calculateShippingCost());
+    }
+
+    public void test9() {
+        ShippingCostCalculator calculator = new ShippingCostCalculator(0, 20, false);
+        try {
+            calculator.calculateShippingCost();
+            fail("Expected an IllegalArgumentException to be thrown");
+        } catch (IllegalArgumentException e) {
+            assertEquals("Invalid weight", e.getMessage());
+        }
+    }
+
+    public void test10() {
+        ShippingCostCalculator calculator = new ShippingCostCalculator(2, 0, true);
+        try {
+            calculator.calculateShippingCost();
+            fail("Expected an IllegalArgumentException to be thrown");
+        } catch (IllegalArgumentException e) {
+            assertEquals("Invalid distance", e.getMessage());
+        }
+    }
+
+    public void test11() {
+        ShippingCostCalculator calculator = new ShippingCostCalculator(2, 150, true);
+        assertEquals((int) ((30000 + 250 * 150) * 1.2), calculator.calculateShippingCost());
+    }
+
+    public void test12() {
+        ShippingCostCalculator calculator = new ShippingCostCalculator(2, 500, false);
+        assertEquals(30000 + 500 * 500, calculator.calculateShippingCost());
+    }
+
+    public void test13() {
+        ShippingCostCalculator calculator = new ShippingCostCalculator(10, 50, true);
+        assertEquals((int) ((70000 + 100 * 50) * 1.2), calculator.calculateShippingCost());
+    }
+
+    public void test14() {
+        ShippingCostCalculator calculator = new ShippingCostCalculator(10, 200, false);
+        assertEquals(70000 + 250 * 200, calculator.calculateShippingCost());
+    }
+
+    public void test15() {
+        ShippingCostCalculator calculator = new ShippingCostCalculator(20, 500, false);
+        assertEquals(70000 + 500 * 500, calculator.calculateShippingCost());
+    }
+}
+```
